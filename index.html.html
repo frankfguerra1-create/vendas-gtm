@@ -3,139 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema V3.1 - Online e Corrigido</title>
+    <title>Sistema V4.2 - Login e Layout Corrigidos</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <!-- DEPENDÊNCIAS DE ESTILO -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
     <!-- Biblioteca do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root { --bg-main: #2c3e50; --bg-panel: #34495e; --text-light: #ecf0f1; --accent-color: #1abc9c; --primary-color: #3498db; --danger-color: #e74c3c; }
-        body { font-family: 'Lato', sans-serif; background-color: var(--bg-main); color: var(--text-light); margin: 0; padding: 0; }
+        body { font-family: 'Lato', sans-serif; background-color: var(--bg-main); color: var(--text-light); }
         .hidden { display: none !important; }
+        .panel { background-color: var(--bg-panel); border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .main-container { padding: 20px; }
         #login-view-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         #login-view { width: 100%; max-width: 400px; }
-        .panel { background-color: var(--bg-panel); border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        h1, h2, h3 { color: var(--text-light); border-bottom: 1px solid #4a627a; padding-bottom: 10px; margin-top: 0; }
-        .main-container { padding: 20px; }
-        .tabs-nav { display: flex; flex-wrap: wrap; border-bottom: 2px solid #4a627a; margin-bottom: 20px; }
-        .tabs-nav button { background: none; border: none; color: var(--text-light); padding: 15px 25px; font-size: 16px; cursor: pointer; position: relative; opacity: 0.7; }
-        .tabs-nav button.active { opacity: 1; font-weight: 700; }
-        .tabs-nav button.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background-color: var(--accent-color); }
-        .tab-content { display: none; } .tab-content.active { display: block; }
-        .control-group { margin-bottom: 15px; }
-        .control-group label { display: block; margin-bottom: 5px; font-weight: 700; }
-        .control-group input, .control-group select { width: 100%; padding: 10px; background-color: var(--bg-main); border: 1px solid #4a627a; border-radius: 4px; color: var(--text-light); box-sizing: border-box; }
-        .btn { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; }
-        .btn-primary { background-color: var(--primary-color); color: var(--text-light); }
-        .btn-danger { background-color: var(--danger-color); color: white; }
-        .btn-sm { padding: 5px 10px; font-size: 12px; }
+        
+        .modal-custom { display: none; position: fixed; z-index: 1055; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
+        .modal-custom .modal-content-custom { background-color: #ffffff; color: #333; margin: auto; padding: 25px; border: 1px solid #888; width: 90%; max-width: 600px; border-radius: 8px; text-align: center; }
+        
         .dataTables_wrapper { color: var(--text-light) !important; }
+        .dataTables_length select, .dataTables_filter input, .dataTables_info, .dataTables_paginate a { color: var(--text-light) !important; background-color: var(--bg-panel); }
         table.dataTable thead th, table.dataTable tbody td { color: var(--text-light); }
+        .quantity-input { width: 70px; text-align: center; background-color: #2c3e50; color: white; border: 1px solid #4a627a; border-radius: 4px; }
     </style>
 </head>
 <body>
 
-<div id="login-view-container">
+<!-- ============== ÁREA DE LOGIN ============== -->
+<div id="login-view-container" class="d-flex justify-content-center align-items-center min-vh-100">
     <div id="login-view" class="panel">
-        <h1><i class="fa-solid fa-store"></i> Acesso ao Sistema</h1>
-        <div class="control-group"><label for="email">Email</label><input type="email" id="email" placeholder="gestor@empresa.com"></div>
-        <div class="control-group"><label for="password">Senha</label><input type="password" id="password" value="123"></div>
-        <button id="login-btn" class="btn btn-primary" style="width: 100%;">Entrar</button>
-        <p id="errorMessage" class="hidden" style="color: var(--danger-color); text-align: center; margin-top: 10px;"></p>
+        <h1><i class="bi bi-shop"></i> Acesso ao Sistema</h1>
+        <div class="mb-3"><label for="email" class="form-label">Email</label><input type="email" class="form-control" id="email" placeholder="gestor@empresa.com"></div>
+        <div class="mb-3"><label for="password" class="form-label">Senha</label><input type="password" class="form-control" id="password" value="123"></div>
+        <button id="login-btn" class="btn btn-primary w-100">Entrar</button>
+        <p id="errorMessage" class="hidden text-danger text-center mt-3"></p>
     </div>
 </div>
 
+<!-- ============== APLICAÇÃO PRINCIPAL ============== -->
 <div id="app-container" class="main-container hidden">
-    <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1><i class="fa-solid fa-store"></i> Ferramenta de Pedidos e Gestão</h1>
-        <div><span id="welcome-message" style="margin-right: 20px;"></span><button id="logout-btn" class="btn btn-danger btn-sm">Sair</button></div>
+    <header class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-shop"></i> Ferramenta de Pedidos e Gestão</h1>
+        <div><span id="welcome-message" class="me-3"></span><button id="logout-btn" class="btn btn-danger btn-sm">Sair</button></div>
     </header>
-    <nav class="tabs-nav">
-        <button class="tab-btn active" data-tab="tab-pedido"><i class="fa-solid fa-file-invoice"></i> Criar Pedido</button>
-        <button class="tab-btn" data-tab="tab-dashboard"><i class="fa-solid fa-chart-pie"></i> Painel de Gestão</button>
-    </nav>
-    <div id="tab-pedido" class="tab-content active">
-        <div class="panel"><div class="control-group"><label>Cliente</label><select id="client-select"></select></div></div>
-        <div class="panel"><table id="productsTable" class="display" style="width:100%"></table></div>
-        <div class="panel"><button id="closeOrderBtn" class="btn btn-primary"><i class="fa-solid fa-circle-check"></i> Fechar Pedido</button></div>
+    
+    <ul class="nav nav-tabs" id="main-nav" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab-btn-pedido" data-bs-toggle="tab" data-bs-target="#tab-pedido" type="button" role="tab"><i class="bi bi-file-earmark-plus"></i> Criar Pedido</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-btn-dashboard" data-bs-toggle="tab" data-bs-target="#tab-dashboard" type="button" role="tab"><i class="bi bi-speedometer2"></i> Painel de Gestão</button>
+        </li>
+    </ul>
+
+    <div class="tab-content pt-3">
+        <div class="tab-pane fade show active" id="tab-pedido" role="tabpanel">
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="panel"><h3>1. Selecione o Cliente</h3><select id="client-select" class="form-select"></select></div>
+                    <div class="panel"><h3>2. Adicione os Produtos</h3><table id="productsTable" class="display" style="width:100%"></table></div>
+                </div>
+                <div class="col-md-5">
+                    <div class="panel">
+                        <h3>3. Resumo do Pedido</h3>
+                        <div id="resumo-carrinho" style="min-height: 200px;"><p class="text-muted">Nenhum item adicionado.</p></div>
+                        <hr>
+                        <h4>Total: <span id="total-carrinho">R$ 0,00</span></h4>
+                        <button id="closeOrderBtn" class="btn btn-primary w-100 mt-3" disabled><i class="bi bi-check-circle-fill"></i> Fechar Pedido</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="tab-dashboard" role="tabpanel"></div>
     </div>
-    <div id="tab-dashboard" class="tab-content"></div>
 </div>
 
+<!-- ============== MODALS (POP-UPS) ============== -->
+<div id="sellInPopup" class="modal-custom"><div class="modal-content-custom"><h2><i class="bi bi-gift-fill text-success"></i> Verba de Sell-in Gerada!</h2><p>Este pedido gerou uma verba de <strong id="valorSellInGerado" class="fs-5">R$ 0,00</strong>.</p><p>Como você deseja utilizar este valor?</p><button id="btnDescontoFinanceiro" class="btn btn-primary">Usar como Desconto Financeiro</button><button id="btnBonificacao" class="btn btn-success">Usar para Bonificação</button><button id="btnNaoUtilizar" class="btn btn-secondary">Não utilizar agora</button></div></div>
+<div id="bonificacaoModal" class="modal-custom"><div class="modal-content-custom" style="max-width: 700px;"><h2>Selecione os Produtos para Bonificação</h2><div class="d-flex justify-content-between"><span>Crédito disponível: <strong id="verbaDisponivelBonificacao">R$ 0,00</strong></span><span>Total selecionado: <strong id="totalSelecionadoBonificacao">R$ 0,00</strong></span></div><hr><div id="listaProdutosBonificacao" style="max-height: 400px; overflow-y: auto; text-align: left; margin-bottom: 15px;"></div><button id="btnConfirmarBonificacao" class="btn btn-success" disabled>Confirmar Bonificação</button><button id="btnCancelarBonificacao" class="btn btn-danger">Cancelar</button></div></div>
+
+<!-- ============== SCRIPTS ============== -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- CÓDIGO JAVASCRIPT PRINCIPAL DA APLICAÇÃO -->
 <script>
-// ===================================================================================
-// PASSO IMPORTANTE: Insira suas chaves do Supabase aqui!
-// ===================================================================================
-const SUPABASE_URL = 'https://hvifiosuvkfvylozbocf.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aWZpb3N1dmtmdnlsb3pib2NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzNjM3MzEsImV4cCI6MjA3NDkzOTczMX0.eY0QCP88yxQqCiMo-2IdF-6fJBs8lQOBNxXMDP5wiuI';
-// ===================================================================================
-
-// LINHA CORRIGIDA: Criamos uma variável 'supabaseClient' para usar em todo o sistema.
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const dataService = {
-    fazerLogin: async (email, senha) => {
-        const { data, error } = await supabaseClient.from('usuarios').select().eq('email', email).eq('senha', senha).single();
-        if (error || !data) return { success: false, message: 'Email ou senha inválidos.' };
-        return { success: true, usuario: { id: data.id, nome: data.nome, perfil: data.perfil } };
-    },
-    buscarPedidos: async (usuario, filtroVendedorId = null) => {
-        let query = supabaseClient.from('pedidos').select(`*, clientes (nome)`);
-        if (usuario.perfil === 'GESTOR' && filtroVendedorId && filtroVendedorId !== 'todos') {
-            query = query.eq('vendedor_id', filtroVendedorId);
-        } else if (usuario.perfil === 'VENDEDOR') {
-            query = query.eq('vendedor_id', usuario.id);
-        }
-        const { data, error } = await query;
-        return error ? [] : data.map(p => ({...p, clienteNome: p.clientes.nome}));
-    },
-    excluirPedido: async (usuario, pedidoId) => {
-        if(usuario.perfil !== 'GESTOR') return { success: false, message: 'Acesso negado.' };
-        const { error } = await supabaseClient.from('pedidos').delete().eq('id', pedidoId);
-        return { success: !error, message: error ? error.message : 'Pedido excluído.' };
-    },
-    criarPedido: async (usuario, pedidoData) => {
-        const { error } = await supabaseClient.from('pedidos').insert({ ...pedidoData, vendedor_id: usuario.id });
-        return { success: !error, message: error ? error.message : 'Pedido criado.' };
-    },
-    buscarVendedores: async () => {
-        const { data, error } = await supabaseClient.from('usuarios').select().eq('perfil', 'VENDEDOR');
-        return error ? [] : data;
-    },
-    buscarClientes: async (usuario) => {
-        let query = supabaseClient.from('clientes').select();
-        if (usuario.perfil === 'VENDEDOR') query = query.eq('vendedor_id', usuario.id);
-        const { data, error } = await query;
-        return error ? [] : data;
-    },
-    buscarProdutos: async () => {
-        const { data, error } = await supabaseClient.from('produtos').select();
-        return error ? [] : data.map(p => ({...p, qtdCaixas: ''}));
-    }
-};
-
 $(document).ready(function() {
-    // O restante do código permanece exatamente o mesmo
+    // ===================================================================================
+    // CONFIGURAÇÃO SUPABASE: Insira suas chaves aqui!
+    // ===================================================================================
+    const SUPABASE_URL = 'https://hvifiosuvkfvylozbocf.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aWZpb3N1dmtmdnlsb3pib2NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzNjM3MzEsImV4cCI6MjA3NDkzOTczMX0.eY0QCP88yxQqCiMo-2IdF-6fJBs8lQOBNxXMDP5wiuI';
+    // ===================================================================================
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const dataService = {
+        fazerLogin: async (email, senha) => {
+            const { data, error } = await supabaseClient.from('usuarios').select().eq('email', email).eq('senha', senha).single();
+            if (error || !data) return { success: false, message: 'Email ou senha inválidos.' };
+            return { success: true, usuario: { id: data.id, nome: data.nome, perfil: data.perfil } };
+        },
+        buscarDadosIniciais: async (usuario) => {
+            let clienteQuery = supabaseClient.from('clientes').select();
+            if (usuario.perfil === 'VENDEDOR') clienteQuery = clienteQuery.eq('vendedor_id', usuario.id);
+            const [clientes, produtos] = await Promise.all([clienteQuery, supabaseClient.from('produtos').select()]);
+            return { clientes: clientes.data || [], produtos: produtos.data || [] };
+        },
+        salvarPedido: async (dadosPedido) => {
+            const { data, error } = await supabaseClient.from('pedidos').insert(dadosPedido).select().single();
+            return { data, error };
+        },
+        salvarItensPedido: async (itens) => {
+            const { error } = await supabaseClient.from('itens_pedido').insert(itens);
+            return { error };
+        },
+        atualizarPedido: async (pedidoId, dados) => {
+            const { error } = await supabaseClient.from('pedidos').update(dados).eq('id', pedidoId);
+            return { error };
+        },
+        buscarVendedores: async () => {
+            const { data, error } = await supabaseClient.from('usuarios').select().eq('perfil', 'VENDEDOR');
+            return error ? [] : data;
+        },
+        buscarPedidos: async (usuario, filtroVendedorId = null) => {
+            let query = supabaseClient.from('pedidos').select(`*, clientes (nome)`).order('data', { ascending: false });
+            if (usuario.perfil === 'GESTOR' && filtroVendedorId && filtroVendedorId !== 'todos') {
+                query = query.eq('vendedor_id', filtroVendedorId);
+            } else if (usuario.perfil === 'VENDEDOR') {
+                query = query.eq('vendedor_id', usuario.id);
+            }
+            const { data, error } = await query;
+            return error ? [] : data.map(p => ({...p, clienteNome: p.clientes ? p.clientes.nome : 'Cliente Deletado'}));
+        },
+        excluirPedido: async (pedidoId) => {
+            await supabaseClient.from('itens_pedido').delete().eq('pedido_id', pedidoId);
+            const { error } = await supabaseClient.from('pedidos').delete().eq('id', pedidoId);
+            return { success: !error, message: error ? error.message : 'Pedido excluído.' };
+        }
+    };
+    
     let usuarioLogado = null;
     let productsTable;
     let produtosDisponiveis = [];
-
-    const loginView = $('#login-view-container');
-    const appView = $('#app-container');
+    let carrinho = [];
+    let totalVerbaSellInGerada = 0;
+    let pedidoPrincipalId = null;
+    let carrinhoBonificacao = [];
 
     $('#login-btn').on('click', async () => {
         const email = $('#email').val();
         const password = $('#password').val();
+        if (!email || !password) {
+            $('#errorMessage').text('Por favor, preencha email e senha.').removeClass('hidden');
+            return;
+        }
+        $('#errorMessage').addClass('hidden');
         const resposta = await dataService.fazerLogin(email, password);
         if (resposta.success) {
             usuarioLogado = resposta.usuario;
+            sessionStorage.setItem('usuario', JSON.stringify(usuarioLogado));
             await iniciarApp();
         } else {
             $('#errorMessage').text(resposta.message).removeClass('hidden');
@@ -144,89 +177,253 @@ $(document).ready(function() {
 
     $('#logout-btn').on('click', () => {
         usuarioLogado = null;
-        loginView.removeClass('hidden');
-        appView.addClass('hidden');
+        sessionStorage.removeItem('usuario');
+        location.reload(); 
+    });
+    
+    $('#main-nav').on('click', '#tab-btn-dashboard', function() {
+        if ($('#tab-dashboard').is(':empty')) {
+            loadDashboard();
+        }
     });
 
     async function iniciarApp() {
-        loginView.addClass('hidden');
-        appView.removeClass('hidden');
+        $('#login-view-container').addClass('hidden');
+        $('#app-container').removeClass('hidden');
         $('#welcome-message').text(`Bem-vindo, ${usuarioLogado.nome}!`);
-        if (usuarioLogado.perfil === 'GESTOR') $('.gestor-only').removeClass('hidden');
-        else $('.gestor-only').addClass('hidden');
         await setupCriarPedido();
-        $('.tab-btn[data-tab="tab-pedido"]').click();
+        $('#tab-btn-pedido').tab('show');
     }
-
-    $('.tab-btn').on('click', async function() {
-        const tabId = $(this).data('tab');
-        $('.tab-btn, .tab-content').removeClass('active');
-        $(this).add('#' + tabId).addClass('active');
-        if (tabId === 'tab-dashboard') await loadDashboard();
-    });
-
+    
     async function setupCriarPedido() {
-        const [clientes, produtos] = await Promise.all([
-            dataService.buscarClientes(usuarioLogado),
-            dataService.buscarProdutos()
-        ]);
+        limparPedido();
+        const { clientes, produtos } = await dataService.buscarDadosIniciais(usuarioLogado);
         produtosDisponiveis = produtos;
+        
         const clienteSelect = $('#client-select').html('<option value="">Selecione um cliente...</option>');
         clientes.forEach(c => clienteSelect.append(`<option value="${c.id}">${c.nome}</option>`));
+        
         if (productsTable) productsTable.destroy();
         $('#productsTable tbody').empty();
         productsTable = $('#productsTable').DataTable({
             data: produtosDisponiveis,
             columns: [
-                { data: 'codigo', title: 'Cód.' }, { data: 'produto', title: 'Produto' },
-                { data: 'preco_unit', title: 'Preço Unit.', render: d => formatCurrency(d) },
-                { data: 'qtdCaixas', title: 'Qtd. Cx', render: () => `<input type="number" class="quantity-input">` }
+                { data: 'codigo', title: 'Cód.' }, { data: 'nome_produto', title: 'Produto' },
+                { data: 'preco_unit', title: 'Preço', render: d => formatCurrency(d) },
+                { data: 'id', title: 'Qtd.', orderable: false, render: (data) => `<input type="number" class="quantity-input" data-produto-id="${data}" min="0">` }
             ],
-            pageLength: 5, searching: false, language: { url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/pt-BR.json" }
+            pageLength: 5, searching: true, language: { url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/pt-BR.json" }
         });
+    }
+
+    $('#productsTable').on('input', '.quantity-input', function() {
+        const produtoId = $(this).data('produto-id');
+        const quantidade = parseInt($(this).val()) || 0;
+        adicionarProdutoAoCarrinho(produtoId, quantidade);
+    });
+
+    function adicionarProdutoAoCarrinho(produtoId, quantidade) {
+        const produto = produtosDisponiveis.find(p => p.id == produtoId);
+        if (!produto) return;
+
+        const indexNoCarrinho = carrinho.findIndex(item => item.id === produto.id);
+
+        if (quantidade > 0) {
+            const verbaGeradaItem = (produto.sell_in_percentual && produto.sell_in_percentual > 0) ? produto.preco_unit * quantidade * (produto.sell_in_percentual / 100) : 0;
+            if (indexNoCarrinho > -1) {
+                carrinho[indexNoCarrinho].quantidade = quantidade;
+                carrinho[indexNoCarrinho].verbaGerada = verbaGeradaItem;
+            } else {
+                carrinho.push({ ...produto, quantidade: quantidade, verbaGerada: verbaGeradaItem });
+            }
+        } else {
+            if (indexNoCarrinho > -1) {
+                carrinho.splice(indexNoCarrinho, 1);
+            }
+        }
+        
+        calcularTotalSellInGerado();
+        atualizarCarrinhoUI();
+    }
+    
+    function calcularTotalSellInGerado() {
+        totalVerbaSellInGerada = carrinho.reduce((acc, item) => acc + (item.verbaGerada || 0), 0);
+    }
+
+    function atualizarCarrinhoUI() {
+        const resumoDiv = $('#resumo-carrinho');
+        const totalSpan = $('#total-carrinho');
+        
+        if (carrinho.length === 0) {
+            resumoDiv.html('<p class="text-muted">Nenhum item adicionado.</p>');
+            totalSpan.text(formatCurrency(0));
+            $('#closeOrderBtn').prop('disabled', true);
+            return;
+        }
+
+        let html = '<ul class="list-group list-group-flush">';
+        let totalPedido = 0;
+        carrinho.forEach(item => {
+            const subtotal = item.preco_unit * item.quantidade;
+            totalPedido += subtotal;
+            html += `<li class="list-group-item bg-transparent text-light border-secondary">${item.quantidade}x ${item.nome_produto} - ${formatCurrency(subtotal)}</li>`;
+        });
+        html += '</ul>';
+        
+        resumoDiv.html(html);
+        totalSpan.text(formatCurrency(totalPedido));
+        $('#closeOrderBtn').prop('disabled', false);
+    }
+    
+    function limparPedido() {
+        carrinho = [];
+        totalVerbaSellInGerada = 0;
+        pedidoPrincipalId = null;
+        carrinhoBonificacao = [];
+        atualizarCarrinhoUI();
+        $('#client-select').val('');
+        if(productsTable) {
+            $('.quantity-input').val('');
+        }
     }
 
     $('#closeOrderBtn').on('click', async function() {
         const clienteId = $('#client-select').val();
-        if (!clienteId) return alert('Selecione um cliente.');
-        const itensDoPedido = []; let valorTotal = 0; let caixasTotal = 0;
-        productsTable.rows().every(function() {
-            const d = this.data();
-            const qtd = $(this.node()).find('.quantity-input').val();
-            if (qtd > 0) {
-                const totalItem = qtd * (d.preco_unit * (d.emb_cx || 1));
-                itensDoPedido.push({ produto: d.produto, qtd, total: totalItem });
-                valorTotal += totalItem;
-                caixasTotal += parseInt(qtd);
-            }
-        });
-        if (itensDoPedido.length === 0) return alert('Adicione produtos ao pedido.');
-        const novoPedido = {
-            id: 'PED-' + Date.now(),
-            cliente_id: parseInt(clienteId),
-            valor: valorTotal,
-            caixas: caixasTotal,
-            status: 'Recebido',
-            data: new Date().toISOString().slice(0, 10),
-            itens: itensDoPedido
+        if (!clienteId) { alert('Por favor, selecione um cliente.'); return; }
+        if (carrinho.length === 0) { alert('Carrinho está vazio!'); return; }
+        
+        $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processando...');
+
+        const dadosPedido = {
+            cliente_id: clienteId,
+            user_id: usuarioLogado.id,
+            valor_total: carrinho.reduce((acc, item) => acc + item.preco_unit * item.quantidade, 0),
+            verba_sell_in_gerada: totalVerbaSellInGerada,
+            tipo_uso_sell_in: 'nenhum',
+            eh_bonificacao: false,
+            data: new Date().toISOString()
         };
-        const resposta = await dataService.criarPedido(usuarioLogado, novoPedido);
-        if(resposta.success){
-            alert(`Pedido ${novoPedido.id} criado!`);
-            await setupCriarPedido();
-            $('.tab-btn[data-tab="tab-dashboard"]').click();
+
+        const { data: pedidoSalvo, error: pedidoError } = await dataService.salvarPedido(dadosPedido);
+        
+        if (pedidoError || !pedidoSalvo) {
+            alert('Erro ao salvar o pedido principal! Tente novamente.');
+            $(this).prop('disabled', false).html('<i class="bi bi-check-circle-fill"></i> Fechar Pedido');
+            return;
+        }
+
+        pedidoPrincipalId = pedidoSalvo.id;
+
+        const itensParaSalvar = carrinho.map(item => ({
+            pedido_id: pedidoPrincipalId,
+            produto_id: item.id,
+            quantidade: item.quantidade,
+            preco_unitario: item.preco_unit
+        }));
+
+        const { error: itensError } = await dataService.salvarItensPedido(itensParaSalvar);
+
+        if (itensError) { alert('Erro ao salvar os itens do pedido! Contate o suporte.'); return; }
+
+        if (totalVerbaSellInGerada > 0) {
+            $('#valorSellInGerado').text(formatCurrency(totalVerbaSellInGerada));
+            $('#sellInPopup').css('display', 'flex');
         } else {
-            alert('Erro ao criar pedido: ' + resposta.message);
+            alert('Pedido finalizado com sucesso!');
+            await setupCriarPedido();
         }
     });
 
+    $('#btnDescontoFinanceiro').on('click', async () => {
+        const valorFinalComDesconto = carrinho.reduce((acc, item) => acc + item.preco_unit * item.quantidade, 0) - totalVerbaSellInGerada;
+        const { error } = await dataService.atualizarPedido(pedidoPrincipalId, {
+            tipo_uso_sell_in: 'desconto_financeiro',
+            verba_sell_in_utilizada: totalVerbaSellInGerada,
+            valor_total: valorFinalComDesconto
+        });
+        if (error) { alert('Erro ao aplicar o desconto.'); } 
+        else { alert('Pedido finalizado com desconto aplicado!'); }
+        $('#sellInPopup').hide();
+        await setupCriarPedido();
+    });
+
+    $('#btnBonificacao').on('click', () => {
+        $('#sellInPopup').hide();
+        $('#verbaDisponivelBonificacao').text(formatCurrency(totalVerbaSellInGerada));
+        $('#totalSelecionadoBonificacao').text(formatCurrency(0));
+        carrinhoBonificacao = [];
+
+        const listaDiv = $('#listaProdutosBonificacao').empty();
+        produtosDisponiveis.forEach(p => {
+            listaDiv.append(`<div class="d-flex justify-content-between align-items-center p-2 border-bottom"><span>${p.nome_produto} (${formatCurrency(p.preco_unit)})</span><input type="number" min="0" value="0" class="form-control quantity-input-boni" style="width: 80px;" data-produto-id="${p.id}"></div>`);
+        });
+        $('#bonificacaoModal').css('display', 'flex');
+    });
+
+    $('#bonificacaoModal').on('input', '.quantity-input-boni', function() {
+        let totalBonificado = 0;
+        carrinhoBonificacao = [];
+        $('.quantity-input-boni').each(function() {
+            const quantidade = parseInt($(this).val()) || 0;
+            if (quantidade > 0) {
+                const produtoId = $(this).data('produto-id');
+                const produto = produtosDisponiveis.find(p => p.id == produtoId);
+                totalBonificado += quantidade * produto.preco_unit;
+                carrinhoBonificacao.push({ ...produto, quantidade });
+            }
+        });
+        $('#totalSelecionadoBonificacao').text(formatCurrency(totalBonificado));
+        $('#btnConfirmarBonificacao').prop('disabled', !(totalBonificado > 0 && totalBonificado <= totalVerbaSellInGerada));
+    });
+
+    $('#btnConfirmarBonificacao').on('click', async () => {
+        const totalBonificacaoUtilizada = carrinhoBonificacao.reduce((acc, item) => acc + (item.preco_unit * item.quantidade), 0);
+        
+        const dadosPedidoBonificacao = {
+            cliente_id: $('#client-select').val(),
+            user_id: usuarioLogado.id,
+            valor_total: 0,
+            eh_bonificacao: true,
+            pedido_original_id: pedidoPrincipalId,
+            data: new Date().toISOString()
+        };
+
+        const { data: pedidoBoniSalvo, error: boniError } = await dataService.salvarPedido(dadosPedidoBonificacao);
+        if (boniError) { alert('Erro ao criar pedido de bonificação.'); return; }
+
+        const itensBonificacaoParaSalvar = carrinhoBonificacao.map(item => ({
+            pedido_id: pedidoBoniSalvo.id,
+            produto_id: item.id,
+            quantidade: item.quantidade,
+            preco_unitario: item.preco_unit
+        }));
+
+        await dataService.salvarItensPedido(itensBonificacaoParaSalvar);
+        await dataService.atualizarPedido(pedidoPrincipalId, { tipo_uso_sell_in: 'bonificacao', verba_sell_in_utilizada: totalBonificacaoUtilizada });
+
+        alert('Pedido de bonificação gerado com sucesso!');
+        $('#bonificacaoModal').hide();
+        await setupCriarPedido();
+    });
+
+    $('#btnNaoUtilizar').on('click', async () => {
+        alert('Pedido principal finalizado.');
+        $('#sellInPopup').hide();
+        await setupCriarPedido();
+    });
+    
+    $('#btnCancelarBonificacao').on('click', () => {
+        $('#bonificacaoModal').hide();
+        $('#sellInPopup').css('display', 'flex');
+    });
+
     async function loadDashboard() {
-        $('#tab-dashboard').html(`<div class="panel"><div id="dash-controls" class="hidden"></div><h2>Histórico de Pedidos</h2><table id="followUpTable" class="display" style="width:100%"></table></div>`);
+        $('#tab-dashboard').html(`<div class="panel"><div id="dash-controls" class="mb-3"></div><h2>Histórico de Pedidos</h2><table id="followUpTable" class="display" style="width:100%"></table></div>`);
         if(usuarioLogado.perfil === 'GESTOR') {
             const vendedores = await dataService.buscarVendedores();
-            const select = $('<select id="vendedor-filter-dash"><option value="todos">Todos</option></select>');
+            const select = $('<select id="vendedor-filter-dash" class="form-select"><option value="todos">Todos os Vendedores</option></select>');
             vendedores.forEach(v => select.append(`<option value="${v.id}">${v.nome}</option>`));
-            $('#dash-controls').html(select).removeClass('hidden');
+            $('#dash-controls').html(select);
             select.on('change', () => renderFollowUpTable(select.val()));
         }
         await renderFollowUpTable();
@@ -238,25 +435,32 @@ $(document).ready(function() {
         $('#followUpTable').DataTable({
             data: pedidos,
             columns: [
-                { data: 'id', title: 'ID' }, { data: 'clienteNome', title: 'Cliente' }, { data: 'data', title: 'Data' },
-                { data: 'caixas', title: 'Qtd. Cx' }, { data: 'valor', title: 'Valor', render:d=>formatCurrency(d||0) },
-                { data: 'status', title: 'Status' },
-                { data: null, title: 'Ações', visible: usuarioLogado.perfil === 'GESTOR', render: (d,t,r) => `<button class="btn btn-danger btn-sm delete-btn" data-id="${r.id}">Excluir</button>` }
+                { data: 'id', title: 'ID' }, { data: 'clienteNome', title: 'Cliente' }, { data: 'data', title: 'Data', render: d => new Date(d).toLocaleDateString('pt-BR') },
+                { data: 'valor_total', title: 'Valor', render: (d, t, r) => r.eh_bonificacao ? '<span class="badge bg-info">Bonificação</span>' : formatCurrency(d || 0) },
+                { data: 'tipo_uso_sell_in', title: 'Sell-in', render: d => d === 'desconto_financeiro' ? '<span class="badge bg-warning">Desconto</span>' : (d === 'bonificacao' ? '<span class="badge bg-success">Bônus</span>' : '-') },
+                { data: null, title: 'Ações', visible: usuarioLogado.perfil === 'GESTOR', orderable: false, render: (d,t,r) => `<button class="btn btn-danger btn-sm delete-btn" data-id="${r.id}"><i class="bi bi-trash"></i></button>` }
             ],
+            order: [[2, 'desc']],
             language: { url: "//cdn.datatables.net/plug-ins/1.12.1/i18n/pt-BR.json" }
         });
     }
 
     $('#tab-dashboard').on('click', '.delete-btn', async function() {
         const pedidoId = $(this).data('id');
-        if (confirm(`Tem certeza?`)) {
-            const resp = await dataService.excluirPedido(usuarioLogado, pedidoId);
+        if (confirm(`Tem certeza que deseja excluir o pedido ${pedidoId}? Esta ação não pode ser desfeita.`)) {
+            const resp = await dataService.excluirPedido(pedidoId);
             if (resp.success) await renderFollowUpTable($('#vendedor-filter-dash').val());
-            else alert(resp.message);
+            else alert('Erro ao excluir: ' + resp.message);
         }
     });
 
     const formatCurrency = (v) => !isNaN(v) ? v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'R$ 0,00';
+
+    const usuarioSalvo = sessionStorage.getItem('usuario');
+    if(usuarioSalvo) {
+        usuarioLogado = JSON.parse(usuarioSalvo);
+        iniciarApp();
+    }
 });
 </script>
 
