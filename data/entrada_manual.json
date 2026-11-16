@@ -1,4 +1,0 @@
-{
-  "_instrucoes": "Preencha SOMENTE com valores lidos na fonte oficial no dia. Todos os campos sao obrigatorios. Entradas incompletas sao rejeitadas e o indicador aparece como 'invalido'. Exemplo de formato (nao e dado real): {\"id\":\"boi_gordo\",\"valor\":0,\"unidade\":\"R$/@\",\"indicador_oficial\":\"nome exato na fonte\",\"data_referencia\":\"AAAA-MM-DD\",\"fonte_url\":\"https://...\",\"inserido_por\":\"nome\",\"inserido_em\":\"AAAA-MM-DDTHH:MM:SS-03:00\"}",
-  "entradas": []
-}
